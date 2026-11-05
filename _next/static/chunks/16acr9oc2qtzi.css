@@ -131,3 +131,12 @@ section.is-video .hero-deck-nav{bottom:2.75rem}
 @media (max-width:1023px){section.is-video>.z-10{bottom:0;min-height:0;padding:0 1rem 1.75rem;display:flex;flex-direction:column;align-items:flex-start;gap:.9rem}section.is-video>.z-10>div:not([data-hero]){margin:0}section.is-video [data-hero=headline]{font-size:28px}section.is-video [data-hero=clutch]{display:none}section.is-video .hero-deck-nav{bottom:9.5rem}}
 section[data-hero-intro].is-video>.z-10:has(>[data-hero=video-card]){position:absolute;left:0;right:0;bottom:0;z-index:5;min-height:0;padding:0 1rem 1.75rem;justify-content:flex-start;align-items:flex-start}
 @media (max-width:1023px){section.is-video .hero-deck-nav{bottom:10rem}}
+
+/* INX glass + 3D step cards */
+.hero3d-copy ol{gap:16px;perspective:900px;transform-style:preserve-3d}
+.hero3d-copy li,.hero3d-copy li.on{-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);border-radius:12px;transform-style:preserve-3d;transform:rotateY(calc(10deg + var(--ty,0deg))) rotateX(calc(6deg + var(--tx,0deg)));transition:transform .55s cubic-bezier(.2,.8,.2,1),border-color .4s,box-shadow .45s;will-change:transform}
+.hero3d-copy li{background:linear-gradient(112deg,transparent 60%,rgba(255,255,255,.1) 60.3%,rgba(255,255,255,.02) 100%),linear-gradient(180deg,rgba(60,52,130,.42),rgba(20,22,66,.55));border-color:rgba(203,162,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.35),0 1px 0 #2E2A6A,0 2px 0 #2A2662,0 3px 0 #26225A,0 4px 0 #221F52,0 5px 0 #1E1B4A,0 6px 0 #1A1742,0 7px 0 #16143A,0 22px 36px rgba(4,6,28,.55)}
+.hero3d-copy li.on{transform:rotateY(calc(4deg + var(--ty,0deg))) rotateX(calc(3deg + var(--tx,0deg))) translateZ(34px) translateX(10px);border-color:rgba(255,185,177,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 0 #C2335A,0 2px 0 #B02F5C,0 3px 0 #9E2B5E,0 4px 0 #8C2860,0 5px 0 #7A2462,0 6px 0 #682064,0 7px 0 #561C60,0 0 34px rgba(254,63,86,.45),0 26px 44px rgba(4,6,28,.55)}
+.hero3d-copy li.on::before{opacity:.92}
+.hero3d-copy .ic{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 0 rgba(203,162,255,.35),0 2px 0 rgba(120,90,200,.35),0 3px 0 rgba(80,60,160,.35),0 8px 14px rgba(0,0,0,.35)}
+@media (prefers-reduced-motion:reduce){.hero3d-copy li,.hero3d-copy li.on{transition:border-color .4s,box-shadow .4s}}

@@ -3907,3 +3907,12 @@ deckApi.restart=()=>{ t0=performance.now(); tcur=0; size(); setTimeout(size,650)
 function loop(now){ if(seen){ if(playing){ const nt=Math.max(0,((now-t0)/1000)%L); if(tcur>L-1&&nt<tcur) deckApi.next(); tcur=nt; } frame(tcur); } requestAnimationFrame(loop); }
 frame(tcur); requestAnimationFrame(loop);
 })();
+
+;(function(){ // INX: pointer tilt for the How it works step cards
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const hook=()=>{ const ol=document.querySelector(".hero3d-copy ol"); if(!ol){ return setTimeout(hook,500); }
+    ol.addEventListener("pointermove",e=>{ const r=ol.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+      ol.style.setProperty("--ty",(x*14).toFixed(2)+"deg"); ol.style.setProperty("--tx",(-y*10).toFixed(2)+"deg"); });
+    ol.addEventListener("pointerleave",()=>{ ol.style.setProperty("--ty","0deg"); ol.style.setProperty("--tx","0deg"); }); };
+  hook();
+})();
