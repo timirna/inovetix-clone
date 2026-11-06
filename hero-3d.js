@@ -3708,33 +3708,35 @@ wrap.innerHTML='<div class="hero3d-copy"><div class="hero3d-eyebrow">How it work
 +'<li><i class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#a9a9b2" d="M11 17 5 18l-2 6 6-1.500zM15 21l-1 6-6 2 1.500-6z"/><path fill="#ececf0" fill-rule="evenodd" d="M29 3C20 3 13 8 10 17l5 5c9-3 14-10 14-19zM20.500 8.500a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></i><span class="n">03</span><div class="tx"><b>Launch and grow</b><span>Agents, sites and apps that keep improving.</span></div></li>'+'</ol></div>';
 wrap.appendChild(stage);
 const deck=document.createElement("div"); deck.className="hero-deck"; deck.setAttribute("role","region"); deck.setAttribute("aria-roledescription","carousel"); deck.setAttribute("aria-label","Inovetix highlights");
-deck.innerHTML='<div class="hero-deck-view"><div class="hero-deck-track"><div class="hero-slide"></div><div class="hero-slide hero-slide-video"><div class="hero-reel-frame"><video src="/inovetix-clone/videos/hero/reel-3.mp4" poster="/inovetix-clone/images/hero/reel-3-poster.jpg" muted playsinline preload="metadata"></video><button type="button" class="hero-reel-btn">Unmute</button></div></div></div></div>'
-+'<div class="hero-deck-nav"><button type="button" class="hero-deck-arrow" aria-label="Previous slide">&#8592;</button><button type="button" class="hero-deck-dot" aria-label="How it works"></button><button type="button" class="hero-deck-dot" aria-label="Video"></button><button type="button" class="hero-deck-arrow" aria-label="Next slide">&#8594;</button></div>';
+deck.innerHTML='<div class="hero-deck-view"><div class="hero-deck-track"><div class="hero-slide"></div><div class="hero-slide hero-slide-video"><div class="hero-reel-frame"><video src="/inovetix-clone/videos/hero/reel-3.mp4" poster="/inovetix-clone/images/hero/reel-3-poster.jpg" muted playsinline preload="metadata"></video><button type="button" class="hero-reel-btn">Unmute</button></div></div><div class="hero-slide hero-slide-video"><div class="hero-reel-frame"><video src="/inovetix-clone/videos/hero/reel-4.mp4" poster="/inovetix-clone/images/hero/reel-4-poster.jpg" muted playsinline preload="metadata"></video><button type="button" class="hero-reel-btn">Unmute</button></div></div></div></div>'
++'<div class="hero-deck-nav"><button type="button" class="hero-deck-arrow" aria-label="Previous slide">&#8592;</button><button type="button" class="hero-deck-dot" aria-label="How it works"></button><button type="button" class="hero-deck-dot" aria-label="First video"></button><button type="button" class="hero-deck-dot" aria-label="Second video"></button><button type="button" class="hero-deck-arrow" aria-label="Next slide">&#8594;</button></div>';
 deck.querySelector(".hero-slide").appendChild(wrap);
 const deckApi={};
 (()=>{
   const view=deck.querySelector(".hero-deck-view"), track=deck.querySelector(".hero-deck-track"), slides=[...deck.querySelectorAll(".hero-slide")];
-  const v=deck.querySelector("video"), vb=deck.querySelector(".hero-reel-btn"), dots=[...deck.querySelectorAll(".hero-deck-dot")], arrows=deck.querySelectorAll(".hero-deck-arrow");
-  const events=["click","keydown","touchend"]; let cur=0, inView=true; v.volume=.2;
+  const vids=[...deck.querySelectorAll("video")], vbs=[...deck.querySelectorAll(".hero-reel-btn")], N=slides.length, dots=[...deck.querySelectorAll(".hero-deck-dot")], arrows=deck.querySelectorAll(".hero-deck-arrow");
+  track.style.width=N*100+"%"; slides.forEach(s=>{ s.style.width=100/N+"%"; });
+  const events=["click","keydown","touchend"]; let cur=0, inView=true, sound=false; vids.forEach(v=>{ v.volume=.2; });
   const fit=()=>{ view.style.height=slides[cur].offsetHeight+"px"; };
-  const label=()=>{ vb.textContent=v.muted?"Unmute":"Mute"; };
-  const safePlay=()=>v.play().catch(()=>{ v.muted=true; label(); v.play().catch(()=>{}); });
-  const mark=()=>document.querySelectorAll("section[data-hero-intro]").forEach(s=>s.classList.toggle("is-video",cur===1));
+  const label=()=>{ vids.forEach(v=>{ v.muted=!sound; }); vbs.forEach(b=>{ b.textContent=sound?"Mute":"Unmute"; }); };
+  const active=()=>vids[cur-1];
+  const safePlay=()=>{ const v=active(); v.play().catch(()=>{ sound=false; label(); v.play().catch(()=>{}); }); };
+  const mark=()=>document.querySelectorAll("section[data-hero-intro]").forEach(s=>s.classList.toggle("is-video",cur>0));
   deckApi.mark=mark;
-  const go=i=>{ cur=(i+2)%2; mark(); track.style.marginLeft=cur?"-100%":"0";
+  const go=i=>{ cur=(i+N)%N; mark(); track.style.marginLeft=cur?(-100*cur)+"%":"0"; vids.forEach(v=>v.pause());
     slides.forEach((el,n)=>{ el.inert=n!==cur; el.setAttribute("aria-hidden",n!==cur); });
     dots.forEach((d,n)=>d.setAttribute("aria-current",n===cur)); fit();
-    if(cur){ v.currentTime=0; safePlay(); } else { v.pause(); if(deckApi.restart) deckApi.restart(); } };
+    if(cur){ active().currentTime=0; safePlay(); } else if(deckApi.restart) deckApi.restart(); };
   deckApi.next=()=>{ if(inView&&cur===0) go(1); };
   arrows[0].addEventListener("click",()=>go(cur-1)); arrows[1].addEventListener("click",()=>go(cur+1));
   dots.forEach((d,n)=>d.addEventListener("click",()=>go(n)));
-  v.addEventListener("ended",()=>go(0));
+  vids.forEach((v,n)=>v.addEventListener("ended",()=>go(n+2)));
   const stop=()=>events.forEach(e=>window.removeEventListener(e,gesture,true));
-  function gesture(e){ stop(); if(e.target&&e.target.closest&&e.target.closest(".hero-reel-btn")) return; v.muted=false; label(); }
+  function gesture(e){ stop(); if(e.target&&e.target.closest&&e.target.closest(".hero-reel-btn")) return; sound=true; label(); }
   events.forEach(e=>window.addEventListener(e,gesture,true));
-  vb.addEventListener("click",()=>{ stop(); v.muted=!v.muted; label(); });
-  new ResizeObserver(fit).observe(slides[0]); new ResizeObserver(fit).observe(slides[1]);
-  new IntersectionObserver(e=>{ inView=e[e.length-1].isIntersecting; if(!inView) v.pause(); else if(cur===1) safePlay(); },{threshold:.3}).observe(deck);
+  vbs.forEach(b=>b.addEventListener("click",()=>{ stop(); sound=!sound; label(); }));
+  slides.forEach(s=>new ResizeObserver(fit).observe(s));
+  new IntersectionObserver(e=>{ inView=e[e.length-1].isIntersecting; if(!inView) vids.forEach(v=>v.pause()); else if(cur>0) safePlay(); },{threshold:.3}).observe(deck);
   deckApi.init=()=>go(0);
 })();
 const wide=window.matchMedia("(min-width: 1024px)");
